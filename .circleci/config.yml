@@ -5,29 +5,29 @@ workflows:
   test:
     jobs:
       - build-netstandard-2
-      - test-netcore:
-          name: .NET Standard 2.0 + .NET Core 2.1
-          docker-image: mcr.microsoft.com/dotnet/core/sdk:2.1-focal
-          build-target-framework: netstandard2.0
-          test-target-framework: netcoreapp2.1
-          requires:
-            - build-netstandard-2
-      - test-netcore:
-          name: .NET Standard 2.0 + .NET Core 3.1
-          docker-image: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
-          build-target-framework: netstandard2.0
-          test-target-framework: netcoreapp3.1
-          requires:
-            - build-netstandard-2
-      - test-netcore:
-          name: .NET Standard 2.0 + .NET 5.0
-          docker-image: mcr.microsoft.com/dotnet/sdk:5.0-focal
-          build-target-framework: netstandard2.0
-          test-target-framework: net5.0
-          requires:
-            - build-netstandard-2
-      - test-windows-netframework-4-5-2:
-          name: .NET Framework 4.5.2
+#       - test-netcore:
+#           name: .NET Standard 2.0 + .NET Core 2.1
+#           docker-image: mcr.microsoft.com/dotnet/core/sdk:2.1-focal
+#           build-target-framework: netstandard2.0
+#           test-target-framework: netcoreapp2.1
+#           requires:
+#             - build-netstandard-2
+#       - test-netcore:
+#           name: .NET Standard 2.0 + .NET Core 3.1
+#           docker-image: mcr.microsoft.com/dotnet/core/sdk:3.1-focal
+#           build-target-framework: netstandard2.0
+#           test-target-framework: netcoreapp3.1
+#           requires:
+#             - build-netstandard-2
+#       - test-netcore:
+#           name: .NET Standard 2.0 + .NET 5.0
+#           docker-image: mcr.microsoft.com/dotnet/sdk:5.0-focal
+#           build-target-framework: netstandard2.0
+#           test-target-framework: net5.0
+#           requires:
+#             - build-netstandard-2
+      - test-windows-netframework-4-8:
+          name: .NET Framework 4.8
 
 orbs:
   win: circleci/windows@1.0.0
@@ -102,12 +102,12 @@ jobs:
           name: run tests
           command: dotnet test test/LaunchDarkly.CommonSdk.Tests/LaunchDarkly.CommonSdk.Tests.csproj -f <<parameters.test-target-framework>>
 
-  test-windows-netframework-4-5-2:
+  test-windows-netframework-4-8:
     executor:
       name: win/vs2019
       shell: powershell.exe
     environment:
-      TESTFRAMEWORK: net452
+      TESTFRAMEWORK: net48
     steps:
       - checkout
       - restore_cache:
@@ -121,8 +121,8 @@ jobs:
           paths:
             - C:\Users\circleci\.nuget\packages
       - run:
-          name: build SDK for .NET Framework 4.5.2
-          command: dotnet build src/LaunchDarkly.CommonSdk -f net452
+          name: build SDK for .NET Framework 4.8
+          command: dotnet build src/LaunchDarkly.CommonSdk -f net48
       - run:
-          name: run tests in .NET Framework 4.5.2
-          command: dotnet test test/LaunchDarkly.CommonSdk.Tests/LaunchDarkly.CommonSdk.Tests.csproj -f net452
+          name: run tests in .NET Framework 4.8
+          command: dotnet test test/LaunchDarkly.CommonSdk.Tests/LaunchDarkly.CommonSdk.Tests.csproj -f net48
